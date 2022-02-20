@@ -12,6 +12,8 @@
   "dependencies": {
     "@middy/core": "^2.5.3",
     "@middy/http-json-body-parser": "^2.5.3",
+    "@middy/validator": "^2.5.7",
+    "ajv": "^8.10.0",
     "express": "^4.17.3",
     "serverless-http": "^2.7.0"
   },
