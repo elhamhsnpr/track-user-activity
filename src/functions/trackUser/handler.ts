@@ -3,9 +3,11 @@ import { formatJSONResponse } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
 import Ajv from 'ajv';
 // import 'source-map-support/register';
-
+import * as AWS from 'aws-sdk';
 
 import schema from './schema';
+
+const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 const handler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
     try {
@@ -19,16 +21,29 @@ const handler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event)
 
         if (valid) {
 
-            const trackUserBody = {
-                received: true,
-                ...body
+            // const trackUserBody = {
+            //     received: true,
+            //     ...body
 
+            // }
+
+            const userTrackParams = {
+                TableName: 'userTrack-table',
+                Item: {
+                    ...body
+                }
             }
 
-
+            const data = await dynamodb.put(userTrackParams)
+                .promise()
+                
             return formatJSONResponse({
-                trackUserBody
+                message: "Item successfully added to the DB"
             });
+
+            // return formatJSONResponse({
+            //     trackUserBody
+            // });
 
         } else {
 
